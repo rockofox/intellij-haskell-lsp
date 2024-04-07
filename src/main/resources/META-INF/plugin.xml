@@ -1,0 +1,22 @@
+<idea-plugin>
+    <id>boo.fox.haskelllsp</id>
+
+    <name>Haskell LSP</name>
+
+    <vendor email="hello@fox.boo" url="https://fox.boo">RockoFox</vendor>
+
+    <description>
+        <![CDATA[
+        <p>Haskell LSP is a plugin that provides Haskell language support for IntelliJ IDEA.</p>
+        <p>It uses the Haskell Language Server to provide features like code completion, go to definition, and more.</p>
+        ]]>
+    </description>
+
+    <depends>com.intellij.modules.ultimate</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <configurationType implementation="boo.fox.haskelllsp.runconfiguration.CabalRunConfigurationType"/>
+        <!--suppress PluginXmlValidity -->
+        <platform.lsp.serverSupportProvider implementation="boo.fox.haskelllsp.HaskellLspServerSupportProvider"/>
+    </extensions>
+</idea-plugin>
