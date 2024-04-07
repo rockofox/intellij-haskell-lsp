@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   viewBox="100 150 170 170"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.42.2"
+   inkscape:export-filename="Cabal-With-Text-Light-Dark.png"
+   inkscape:export-xdpi="90.000000"
+   inkscape:export-ydpi="90.000000"
+   sodipodi:docbase="/home/cale"
+   sodipodi:docname="Cabal.svg">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.0000000"
+     inkscape:cx="506.92330"
+     inkscape:cy="608.66875"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:window-width="1061"
+     inkscape:window-height="911"
+     inkscape:window-x="48"
+     inkscape:window-y="54" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="opacity:1.0000000;color:#000000;fill:#6bc9dd;fill-opacity:1.0000000;fill-rule:evenodd;stroke:none;stroke-width:2.0987501;stroke-linecap:butt;stroke-linejoin:miter;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4.0000000;stroke-dasharray:none;stroke-dashoffset:0.0000000;stroke-opacity:1.0000000;visibility:visible;display:inline;overflow:visible"
+       id="rect2039"
+       width="71.415276"
+       height="104.27237"
+       x="-85.747696"
+       y="206.47623"
+       ry="8.1971111"
+       rx="8.1943159"
+       transform="matrix(-0.983393,0.181487,0.601916,0.798559,0.000000,0.000000)"
+       inkscape:export-filename="/home/cale/Cabal-With-Text.png"
+       inkscape:export-xdpi="90.000000"
+       inkscape:export-ydpi="90.000000" />
+    <rect
+       style="opacity:1.0000000;color:#000000;fill:#6a6bd7;fill-opacity:1.0000000;fill-rule:evenodd;stroke:none;stroke-width:2.0987501;stroke-linecap:butt;stroke-linejoin:miter;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4.0000000;stroke-dasharray:none;stroke-dashoffset:0.0000000;stroke-opacity:1.0000000;visibility:visible;display:inline;overflow:visible"
+       id="rect2041"
+       width="72.138588"
+       height="81.999947"
+       x="-517.21075"
+       y="406.24854"
+       rx="7.1182766"
+       ry="8.1971159"
+       transform="matrix(-0.985282,0.170934,-0.591748,0.806123,0.000000,0.000000)"
+       inkscape:export-filename="/home/cale/Cabal-With-Text.png"
+       inkscape:export-xdpi="90.000000"
+       inkscape:export-ydpi="90.000000" />
+    <path
+       sodipodi:type="star"
+       style="opacity:1.0000000;color:#000000;fill:#567dd9;fill-opacity:1.0000000;fill-rule:evenodd;stroke:none;stroke-width:2.0987501;stroke-linecap:butt;stroke-linejoin:miter;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4.0000000;stroke-dasharray:none;stroke-dashoffset:0.0000000;stroke-opacity:1.0000000;visibility:visible;display:inline;overflow:visible"
+       id="path2061"
+       sodipodi:sides="5"
+       sodipodi:cx="142.00000"
+       sodipodi:cy="228.36218"
+       sodipodi:r1="23.282461"
+       sodipodi:r2="41.484936"
+       sodipodi:arg1="1.9378187"
+       sodipodi:arg2="2.5661372"
+       inkscape:flatsided="false"
+       inkscape:rounded="0.090000000"
+       inkscape:randomized="0.0000000"
+       d="M 133.64537,250.09403 C 131.42237,249.23942 108.49256,252.93703 107.19644,250.93899 C 105.90032,248.94094 118.62422,229.51026 118.75006,227.13197 C 118.87590,224.75368 108.27356,204.08876 109.77329,202.23865 C 111.27302,200.38854 133.68460,206.48527 135.98537,205.87002 C 138.28615,205.25477 154.66336,188.78553 156.88636,189.64014 C 159.10936,190.49476 160.23658,213.69343 161.53269,215.69147 C 162.82881,217.68952 183.55283,228.17589 183.42698,230.55418 C 183.30114,232.93247 161.58623,241.17330 160.08649,243.02341 C 158.58676,244.87352 155.01770,267.82370 152.71693,268.43895 C 150.41615,269.05420 135.86838,250.94865 133.64537,250.09403 z "
+       transform="matrix(0.629241,-0.714808,-0.590778,-0.879095,184.8544,544.0709)"
+       inkscape:export-filename="/home/cale/Cabal-With-Text.png"
+       inkscape:export-xdpi="90.000000"
+       inkscape:export-ydpi="90.000000" />
+
+
+
+
+  </g>
+</svg>
