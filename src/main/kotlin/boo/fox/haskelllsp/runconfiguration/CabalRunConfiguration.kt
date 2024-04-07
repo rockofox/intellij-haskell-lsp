@@ -20,14 +20,14 @@ class CabalRunConfiguration(
         return super.getOptions() as CabalRunConfigurationOptions
     }
 
-    var scriptName: String?
-        get() = options.scriptName
-        set(scriptName) {
-            options.scriptName = scriptName
+    var command: String?
+        get() = options.command
+        set(command) {
+            options.command = command
         }
 
     override fun getConfigurationEditor(): SettingsEditor<out RunConfiguration?> {
-        return CabalSettingsEditor()
+        return CabalSettingsEditor(project)
     }
 
     override fun getState(
@@ -38,7 +38,7 @@ class CabalRunConfiguration(
             @Throws(ExecutionException::class)
             override fun startProcess(): ProcessHandler {
                 val commandLine =
-                    GeneralCommandLine("cabal", "run")
+                    GeneralCommandLine("cabal", options.command!!)
                 commandLine.workDirectory = File(project.basePath!!)
                 val processHandler = ProcessHandlerFactory.getInstance()
                     .createColoredProcessHandler(commandLine)
