@@ -3,6 +3,7 @@ package boo.fox.haskelllsp.runconfiguration
 import com.intellij.execution.process.ProcessOutputType
 import com.intellij.execution.testframework.TestConsoleProperties
 import com.intellij.execution.testframework.sm.runner.OutputToGeneralTestEventsConverter
+import com.intellij.execution.testframework.sm.runner.history.actions.AbstractImportTestsAction
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.util.Key
 import jetbrains.buildServer.messages.serviceMessages.*

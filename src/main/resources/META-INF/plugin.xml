@@ -12,11 +12,44 @@
         ]]>
     </description>
 
+    <change-notes><![CDATA[
+    <h3>1.0.0</h3>
+    <ul>
+        <li>Initial release</li>
+    </ul>
+    <h3>1.1.0</h3>
+    <ul>
+        <li>Added support for HUnit/HSpec test frameworks</li>
+    </ul>
+    <h3>1.2.0</h3>
+    <ul>
+        <li>Improved syntax highlighting</li>
+        <li>Support for tasty + tasty-ant-xml as a test framework</li>
+        <li>Menu item to create Haskell files</li>
+    </ul>
+    ]]>
+    </change-notes>
     <depends>com.intellij.modules.ultimate</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <configurationType implementation="boo.fox.haskelllsp.runconfiguration.CabalRunConfigurationType"/>
         <!--suppress PluginXmlValidity -->
         <platform.lsp.serverSupportProvider implementation="boo.fox.haskelllsp.HaskellLspServerSupportProvider"/>
+        <fileType
+                name="Haskell"
+                implementationClass="boo.fox.haskelllsp.language.HaskellFileType"
+                language="Haskell"
+                extensions="hs">
+        </fileType>
+        <internalFileTemplate name="Haskell File"/>
+        <lang.parserDefinition language="Haskell"
+                               implementationClass="boo.fox.haskelllsp.language.HaskellParserDefinition"/>
+        <lang.syntaxHighlighterFactory language="Haskell"
+                                      implementationClass="boo.fox.haskelllsp.language.HaskellSyntaxHighlighterFactory"/>
     </extensions>
+<!--    <actions>-->
+<!--        <action id="Create.HaskellFile" class="boo.fox.haskelllsp.CreateHaskellFileAction" text="Haskell File" description="Create a new Haskell file"> &lt;!&ndash; TODO: change to haskell icon? &ndash;&gt;-->
+<!--            <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewXml" />-->
+<!--        </action>-->
+<!--    </actions>-->
 </idea-plugin>

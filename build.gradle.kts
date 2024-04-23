@@ -2,10 +2,11 @@ plugins {
     id("java")
     id("org.jetbrains.kotlin.jvm") version "1.9.22"
     id("org.jetbrains.intellij") version "1.17.2"
+    id("org.jetbrains.grammarkit") version "2022.3.2.2"
 }
 
 group = "boo.fox"
-version = "1.1.0"
+version = "1.2.0"
 
 repositories {
     mavenCentral()
@@ -18,6 +19,12 @@ intellij {
     type.set("IU") // Target IDE Platform
 
     plugins.set(listOf(/* Plugin Dependencies */))
+    apply(plugin = "org.jetbrains.grammarkit")
+}
+
+// FIXME: GrammarKit
+grammarKit {
+
 }
 
 tasks {
@@ -45,3 +52,6 @@ tasks {
         token.set(System.getenv("PUBLISH_TOKEN"))
     }
 }
+
+sourceSets["main"].java.srcDirs("src/main/gen")
+sourceSets["main"].kotlin.srcDirs("src/main/gen")
