@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "boo.fox"
-version = "1.2.0"
+version = "1.2.1"
 
 repositories {
     mavenCentral()

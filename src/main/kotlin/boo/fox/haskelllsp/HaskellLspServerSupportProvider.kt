@@ -19,5 +19,5 @@ internal class HaskellLspServerSupportProvider : LspServerSupportProvider {
 
 private class HaskellLspServerDescriptor(project: Project) : ProjectWideLspServerDescriptor(project, "Haskell") {
     override fun isSupportedFile(file: VirtualFile) = file.extension == "hs"
-    override fun createCommandLine() = GeneralCommandLine("haskell-language-server-wrapper", "--lsp")
+    override fun createCommandLine() = GeneralCommandLine("haskell-language-server-wrapper", "--lsp").also { it.withWorkDirectory(project.basePath) }
 }
