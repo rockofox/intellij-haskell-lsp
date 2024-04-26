@@ -6,4 +6,4 @@ It uses the Haskell Language Server to provide features like code completion, go
 ![Screenshot](assets/screenshot.png)
 
 ## Acknowledgements
-Syntax Highlighting is loosely based around [intellij-haskell](https://github.com/rikvdkleij/intellij-haskell)'s Lexer/Parser and [intellij-haskell](https://www.haskell.org/onlinereport/syntax-iso.html).
+Syntax Highlighting is loosely based around [intellij-haskell](https://github.com/rikvdkleij/intellij-haskell)'s Lexer/Parser and [The Haskell 98 Report](https://www.haskell.org/onlinereport/syntax-iso.html).
