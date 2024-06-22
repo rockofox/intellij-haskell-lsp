@@ -2,8 +2,7 @@ package boo.fox.haskelllsp.language
 
 import boo.fox.haskelllsp.language.parser.HaskellParser
 import boo.fox.haskelllsp.language.psi.HaskellTypes
-import boo.fox.haskelllsp.language.psi.HaskellTypes.HS_COMMENT
-import boo.fox.haskelllsp.language.psi.HaskellTypes.HS_STRING_LITERAL
+import boo.fox.haskelllsp.language.psi.HaskellTypes.*
 import com.intellij.lang.ASTNode
 import com.intellij.lang.ParserDefinition
 import com.intellij.lang.PsiParser
@@ -30,7 +29,7 @@ class HaskellParserDefinition: ParserDefinition{
     }
 
     override fun getCommentTokens(): TokenSet {
-        return TokenSet.create(HS_COMMENT)
+        return TokenSet.create(HS_COMMENT, HS_NCOMMENT, HS_NOT_TERMINATED_COMMENT, HS_HADDOCK, HS_NHADDOCK)
     }
 
     override fun getStringLiteralElements(): TokenSet {

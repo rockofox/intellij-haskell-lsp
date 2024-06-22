@@ -13,6 +13,10 @@
     </description>
 
     <change-notes><![CDATA[
+    <h3>1.3</h3>
+    <ul>
+        <li>Implementation now uses [LSP4IJ](https://github.com/redhat-developer/lsp4ij)</li>
+    </ul>
     <h3>1.2.1</h3>
     <ul>
         <li>Fixed a bug that prevented LSP from starting</li>
@@ -33,12 +37,11 @@
     </ul>
     ]]>
     </change-notes>
-    <depends>com.intellij.modules.ultimate</depends>
+    <depends>com.redhat.devtools.lsp4ij</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <configurationType implementation="boo.fox.haskelllsp.runconfiguration.CabalRunConfigurationType"/>
         <!--suppress PluginXmlValidity -->
-        <platform.lsp.serverSupportProvider implementation="boo.fox.haskelllsp.HaskellLspServerSupportProvider"/>
         <fileType
                 name="Haskell"
                 implementationClass="boo.fox.haskelllsp.language.HaskellFileType"
@@ -50,6 +53,27 @@
                                implementationClass="boo.fox.haskelllsp.language.HaskellParserDefinition"/>
         <lang.syntaxHighlighterFactory language="Haskell"
                                       implementationClass="boo.fox.haskelllsp.language.HaskellSyntaxHighlighterFactory"/>
+        <lang.foldingBuilder language="Haskell"
+                             implementationClass="com.redhat.devtools.lsp4ij.features.foldingRange.LSPFoldingRangeBuilder"
+                             order="first"/>
+        <codeInsight.parameterInfo
+                language="Haskell"
+                implementationClass="com.redhat.devtools.lsp4ij.features.signatureHelp.LSPParameterInfoHandler"/>
+    </extensions>
+    <extensions defaultExtensionNs="com.redhat.devtools.lsp4ij">
+        <server id="haskellLanguageServer"
+                name="Haskell Language Server"
+                factoryClass="boo.fox.haskelllsp.HaskellLanguageServerFactory">
+            <description><![CDATA[
+        Haskell Language Server.
+        ]]>
+            </description>
+        </server>
+        <languageMapping language="Haskell"
+                         serverId="haskellLanguageServer"/>
+        <languageMapping language="Haskell"
+                         serverId="haskellLanguageServer"
+                         languageId="haskell"/>
     </extensions>
 <!--    <actions>-->
 <!--        <action id="Create.HaskellFile" class="boo.fox.haskelllsp.CreateHaskellFileAction" text="Haskell File" description="Create a new Haskell file"> &lt;!&ndash; TODO: change to haskell icon? &ndash;&gt;-->
