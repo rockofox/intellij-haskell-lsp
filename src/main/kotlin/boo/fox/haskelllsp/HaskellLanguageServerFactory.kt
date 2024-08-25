@@ -43,7 +43,7 @@ class HaskellLanguageServer(project: Project) : ProcessStreamConnectionProvider(
         if (rootUri !== null) {
             val hlsConf = rootUri.findFileByRelativePath("hls.json")
 
-            if (hlsConf != null) {
+            if (hlsConf != null && hlsConf.exists()) {
                 val initializationOptions = JsonParser.parseReader(FileReader(hlsConf.path))
                 return initializationOptions
             }
