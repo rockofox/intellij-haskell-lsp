@@ -1,25 +1,28 @@
 plugins {
     id("java")
-    id("org.jetbrains.kotlin.jvm") version "1.9.22"
-    id("org.jetbrains.intellij") version "1.17.2"
+    id("org.jetbrains.kotlin.jvm") version "1.9.25"
+    id("org.jetbrains.intellij.platform") version "2.0.1"
     id("org.jetbrains.grammarkit") version "2022.3.2.2"
 }
 
 group = "boo.fox"
-version = "1.3.2"
+version = "1.3.3"
 
 repositories {
     mavenCentral()
+    intellijPlatform {
+        defaultRepositories()
+    }
 }
 
-// Configure Gradle IntelliJ Plugin
-// Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
-intellij {
-    version.set("2023.3.6")
-    type.set("IC") // Target IDE Platform
-
-    plugins.set(listOf("com.redhat.devtools.lsp4ij:0.0.2"))
-    apply(plugin = "org.jetbrains.grammarkit")
+dependencies {
+    intellijPlatform {
+        intellijIdeaCommunity("2023.3.6")
+        plugin("com.redhat.devtools.lsp4ij:0.5.0")
+        pluginVerifier()
+        zipSigner()
+        instrumentationTools()
+    }
 }
 
 grammarKit {
@@ -49,9 +52,13 @@ tasks {
         dependsOn("generateHaskellParser")
     }
 
+    buildSearchableOptions {
+        enabled = false
+    }
+
     patchPluginXml {
         sinceBuild.set("232")
-        untilBuild.set("242.*")
+        untilBuild.set("243.*")
     }
 
     signPlugin {
