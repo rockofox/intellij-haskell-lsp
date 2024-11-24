@@ -1,6 +1,5 @@
 package boo.fox.haskelllsp
 
-import com.intellij.execution.Platform
 import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.project.Project
@@ -14,7 +13,6 @@ import com.redhat.devtools.lsp4ij.server.ProcessStreamConnectionProvider
 import com.redhat.devtools.lsp4ij.server.StreamConnectionProvider
 import java.io.File
 import java.nio.file.Paths
-import kotlin.io.path.pathString
 
 class HaskellLanguageServerFactory : LanguageServerFactory {
     override fun createConnectionProvider(project: Project): StreamConnectionProvider = HaskellLanguageServer(project)
@@ -23,14 +21,9 @@ class HaskellLanguageServerFactory : LanguageServerFactory {
 
 class HaskellLanguageServer(project: Project) : ProcessStreamConnectionProvider() {
     private fun findExecutableInPATH() =
-        EnvironmentUtil.getEnvironmentMap().values.flatMap { it.split(File.pathSeparator) }
-            .mapNotNull {
-                try {
-                    File(Paths.get(it, HLS_EXECUTABLE_NAME).pathString)
-                } catch (e: Throwable) {
-                    null
-                }
-            }.find { it.exists() && it.canExecute() }?.path
+        EnvironmentUtil.getValue("PATH")?.split(File.pathSeparator)?.firstNotNullOfOrNull { path ->
+            Paths.get(path, HLS_EXECUTABLE_NAME).toFile().takeIf { it.canExecute() }
+        }?.path
 
     init {
         val hlsPath = findExecutableInPATH()
