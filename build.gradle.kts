@@ -1,3 +1,5 @@
+import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
+
 plugins {
     id("java")
     id("org.jetbrains.kotlin.jvm") version "1.9.25"
@@ -6,7 +8,7 @@ plugins {
 }
 
 group = "boo.fox"
-version = "1.3.4"
+version = "1.3.5"
 
 repositories {
     mavenCentral()
@@ -18,7 +20,7 @@ repositories {
 dependencies {
     intellijPlatform {
         intellijIdeaCommunity("2023.3.6")
-        plugin("com.redhat.devtools.lsp4ij:0.5.0")
+        plugin("com.redhat.devtools.lsp4ij:0.8.0")
         pluginVerifier()
         zipSigner()
         instrumentationTools()
@@ -57,7 +59,7 @@ tasks {
     }
 
     patchPluginXml {
-        sinceBuild.set("232")
+        sinceBuild.set("233")
         untilBuild.set("243.*")
     }
 
@@ -69,6 +71,15 @@ tasks {
 
     publishPlugin {
         token.set(System.getenv("PUBLISH_TOKEN"))
+    }
+}
+
+intellijPlatform {
+    pluginVerification {
+        ides {
+            ide(IntelliJPlatformType.IntellijIdeaCommunity, "2023.3.6")
+            ide(IntelliJPlatformType.CLion, "2023.3.6")
+        }
     }
 }
 

@@ -44,3 +44,6 @@ bin/
 
 ### Generated source code ###
 /src/main/gen/
+
+### IntelliJ Platform ###
+.intellijPlatform
