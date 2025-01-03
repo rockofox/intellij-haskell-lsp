@@ -20,7 +20,7 @@ repositories {
 dependencies {
     intellijPlatform {
         intellijIdeaCommunity("2023.3.6")
-        plugin("com.redhat.devtools.lsp4ij:0.8.0")
+        plugin("com.redhat.devtools.lsp4ij:0.9.0")
         pluginVerifier()
         zipSigner()
         instrumentationTools()
