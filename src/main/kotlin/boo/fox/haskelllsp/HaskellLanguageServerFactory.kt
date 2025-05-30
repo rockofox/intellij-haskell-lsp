@@ -48,10 +48,10 @@ class HaskellLanguageServer(project: Project) : ProcessStreamConnectionProvider(
 
 // enabling the semanticTokens plugin is required for semantic tokens support
 class HaskellLanguageClient(project: Project) : LanguageClientImpl(project) {
-    override fun createSettings(): Any? =
+    override fun createSettings(): Any =
         mapOf("haskell" to mapOf("plugin" to mapOf("semanticTokens" to mapOf("globalOn" to true))))
 
-    override fun handleServerStatusChanged(serverStatus: ServerStatus?) {
+    override fun handleServerStatusChanged(serverStatus: ServerStatus) {
         if (serverStatus == ServerStatus.started) {
             triggerChangeConfiguration()
         }
