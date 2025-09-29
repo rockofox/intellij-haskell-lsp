@@ -1,10 +1,12 @@
 import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
+import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 
 plugins {
     id("java")
     id("org.jetbrains.kotlin.jvm") version "1.9.25"
     id("org.jetbrains.intellij.platform") version "2.0.1"
     id("org.jetbrains.grammarkit") version "2022.3.2.2"
+    jacoco
 }
 
 group = "boo.fox"
@@ -24,7 +26,11 @@ dependencies {
         pluginVerifier()
         zipSigner()
         instrumentationTools()
+        testFramework(TestFrameworkType.Platform)
     }
+    testImplementation(kotlin("test"))
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.jacoco:org.jacoco.core:0.8.12")
 }
 
 grammarKit {
@@ -42,6 +48,16 @@ grammarKit {
 }
 
 tasks {
+    jacocoTestReport {
+        reports {
+            xml.required = true
+            html.required = true
+        }
+    }
+    test {
+        finalizedBy(jacocoTestReport)
+    }
+
     // Set the JVM compatibility versions
     withType<JavaCompile> {
         sourceCompatibility = "17"
@@ -85,3 +101,10 @@ intellijPlatform {
 
 sourceSets["main"].java.srcDirs("src/main/gen")
 sourceSets["main"].kotlin.srcDirs("src/main/gen")
+
+sourceSets {
+    test {
+        java.srcDir("src/test/kotlin")
+        kotlin.srcDir("src/test/kotlin")
+    }
+}
