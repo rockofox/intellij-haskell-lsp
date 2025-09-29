@@ -5,6 +5,22 @@
 
     <vendor email="hello@fox.boo" url="https://fox.boo">RockoFox</vendor>
 
+    <depends>com.intellij.modules.platform</depends>
+
+    <applicationListeners>
+        <listener class="boo.fox.haskelllsp.settings.HaskellLspSettings"
+                  topic="com.intellij.openapi.components.PersistentStateComponent"/>
+    </applicationListeners>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <applicationService serviceImplementation="boo.fox.haskelllsp.settings.HaskellLspSettings"/>
+        <applicationConfigurable
+                parentId="tools"
+                instance="boo.fox.haskelllsp.settings.HaskellLspSettingsConfigurable"
+                id="boo.fox.haskelllsp.settings.HaskellLspSettingsConfigurable"
+                displayName="Haskell LSP"/>
+    </extensions>
+
     <description>
         <![CDATA[
         <p>Haskell LSP is a plugin that provides Haskell language support for IntelliJ IDEA.</p>
