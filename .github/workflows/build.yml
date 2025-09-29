@@ -1,0 +1,92 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: gradle
+
+    - name: Install Haskell Language Server
+      run: |
+        sudo apt-get install -y xz-utils
+        curl -L https://github.com/haskell/haskell-language-server/releases/download/2.12.0.0/haskell-language-server-2.12.0.0-x86_64-linux-deb12.tar.xz -o hls.tar.xz
+        tar -xf hls.tar.xz
+        sudo mkdir -p /usr/local/haskell/2.12.0.0
+        sudo mv haskell-language-server-*/* /usr/local/haskell/2.12.0.0/
+        echo "LD_LIBRARY_PATH=/usr/local/haskell/2.12.0.0/lib:$LD_LIBRARY_PATH" >> $GITHUB_ENV
+        sudo rm -f /usr/local/bin/haskell-language-server-* /usr/local/bin/haskell-language-server-wrapper
+        sudo ln -s /usr/local/haskell/2.12.0.0/bin/haskell-language-server-9.2.8 /usr/local/bin/
+        sudo ln -s /usr/local/haskell/2.12.0.0/bin/haskell-language-server-9.4.8 /usr/local/bin/
+        sudo ln -s /usr/local/haskell/2.12.0.0/bin/haskell-language-server-9.6.7 /usr/local/bin/
+        sudo ln -s /usr/local/haskell/2.12.0.0/bin/haskell-language-server-9.8.4 /usr/local/bin/
+        sudo ln -s /usr/local/haskell/2.12.0.0/bin/haskell-language-server-9.10.3 /usr/local/bin/
+        sudo ln -s /usr/local/haskell/2.12.0.0/bin/haskell-language-server-wrapper /usr/local/bin/
+
+    - name: Build with Gradle
+      run: ./gradlew build
+
+    - name: Run tests with coverage
+      run: ./gradlew jacocoTestReport
+
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-report
+        path: build/reports/jacoco/test/html
+
+  package:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        env:
+          - IDEA_VERSION: IC-2023.2.5
+            JDK_VERSION: 17
+          - IDEA_VERSION: IC-2024.1
+            JDK_VERSION: 17
+          - IDEA_VERSION: IU-LATEST-EAP-SNAPSHOT
+            JDK_VERSION: 17
+
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up JDK 11
+        if: matrix.env.JDK_VERSION != '17'
+        uses: actions/setup-java@v3
+        with:
+          java-version: 11
+          distribution: temurin
+          
+      - name: Set up JDK 17
+        if: matrix.env.JDK_VERSION == '17'
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: temurin
+          
+      - name: Build with Gradle
+        run: |
+          ./gradlew -PideaVersion=${IDEA_VERSION} check buildPlugin
+        env: ${{ matrix.env }}
+          
+      - name: Archive distribution artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: "intellij-haskell-lsp-development"
+          path: build/distributions/intellij-haskell-lsp-*.zip
+        if: matrix.env.IDEA_VERSION == 'IC-2023.2.5'
