@@ -2,6 +2,7 @@ package boo.fox.haskelllsp.settings
 
 import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.project.Project
+import com.redhat.devtools.lsp4ij.LanguageServerManager
 import javax.swing.JComponent
 
 class HaskellLspSettingsConfigurable(private val project: Project) : Configurable {
@@ -21,7 +22,20 @@ class HaskellLspSettingsConfigurable(private val project: Project) : Configurabl
 
     override fun apply() {
         val settings = HaskellLspSettings.getInstance()
+        val oldPath = settings.hlsPath
         settings.hlsPath = settingsComponent?.getHlsPath() ?: ""
+        
+        // Restart language server if path changed
+        if (oldPath != settings.hlsPath) {
+            restartLanguageServer()
+        }
+    }
+    
+    private fun restartLanguageServer() {
+        val manager = LanguageServerManager.getInstance(project)
+        // Stop the server first, then restart it
+        manager.stop("haskellLanguageServer")
+        manager.start("haskellLanguageServer")
     }
 
     override fun reset() {

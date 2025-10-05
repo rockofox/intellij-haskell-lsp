@@ -14,7 +14,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <applicationService serviceImplementation="boo.fox.haskelllsp.settings.HaskellLspSettings"/>
-        <applicationConfigurable
+        <projectConfigurable
                 parentId="tools"
                 instance="boo.fox.haskelllsp.settings.HaskellLspSettingsConfigurable"
                 id="boo.fox.haskelllsp.settings.HaskellLspSettingsConfigurable"
