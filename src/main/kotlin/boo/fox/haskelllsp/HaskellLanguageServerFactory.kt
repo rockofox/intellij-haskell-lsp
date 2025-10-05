@@ -26,14 +26,25 @@ class HaskellLanguageServer(project: Project) : ProcessStreamConnectionProvider(
         }?.path
 
     init {
-        val hlsPath = findExecutableInPATH()
+        val settings = boo.fox.haskelllsp.settings.HaskellLspSettings.getInstance()
+        val configuredPath = settings.hlsPath.takeIf { it.isNotEmpty() }
+        val hlsPath = when {
+            configuredPath != null && File(configuredPath).canExecute() -> configuredPath
+            else -> findExecutableInPATH()
+        }
+
         if (!hlsPath.isNullOrEmpty()) {
             super.setCommands(listOf(hlsPath, "--lsp"))
             super.setWorkingDirectory(project.basePath)
         } else {
+            val message = if (configuredPath != null) {
+                "Configured Haskell Language Server path is invalid or not executable. Please check the path in Settings | Tools | Haskell LSP."
+            } else {
+                "Haskell Language Server not found. Configure the path in Settings | Tools | Haskell LSP or make sure it is installed properly and available in PATH."
+            }
             NotificationGroupManager.getInstance().getNotificationGroup("Haskell LSP").createNotification(
                 "Haskell LSP",
-                "Haskell Language Server not found. Make sure it is installed properly (and is available in PATH), and restart the IDE.",
+                message,
                 NotificationType.ERROR
             ).notify(project)
             LanguageServerManager.getInstance(project).stop("haskellLanguageServer")
