@@ -123,6 +123,10 @@
                                       implementationClass="com.redhat.devtools.lsp4ij.features.documentSymbol.LSPDocumentSymbolStructureViewFactory"/>
         <notificationGroup id="Haskell LSP"
                            displayType="BALLOON"/>
+        <annotator language="Haskell"
+                   implementationClass="boo.fox.haskelllsp.evaluation.EvalCommentAnnotator"/>
+
+        <projectService serviceImplementation="boo.fox.haskelllsp.evaluation.HaskellEvaluationService"/>
     </extensions>
     <extensions defaultExtensionNs="com.redhat.devtools.lsp4ij">
         <server id="haskellLanguageServer"

@@ -12,6 +12,9 @@ import com.intellij.util.xmlb.XmlSerializerUtil
 )
 class HaskellLspSettings : PersistentStateComponent<HaskellLspSettings> {
     var hlsPath: String = ""
+    var ghciPath: String = ""
+    var autoEvaluate: Boolean = false
+    var evaluationTimeout: Int = 10
 
     override fun getState(): HaskellLspSettings = this
 

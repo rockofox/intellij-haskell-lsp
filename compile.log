@@ -1,0 +1,12 @@
+Reusing configuration cache.
+> Task :checkKotlinGradlePluginConfigurationErrors
+> Task :generateHaskellLexer UP-TO-DATE
+> Task :generateHaskellParser UP-TO-DATE
+
+> Task :compileKotlin
+w: file:///Users/rocko/GitClones/intellij-haskell-lsp/src/main/kotlin/boo/fox/haskelllsp/evaluation/EvalLineMarkerProvider.kt:36:17 Variable 'action' is never used
+w: file:///Users/rocko/GitClones/intellij-haskell-lsp/src/main/kotlin/boo/fox/haskelllsp/evaluation/EvalLineMarkerProvider.kt:56:69 Parameter 'result' is never used, could be renamed to _
+
+BUILD SUCCESSFUL in 2s
+4 actionable tasks: 2 executed, 2 up-to-date
+Configuration cache entry reused.
