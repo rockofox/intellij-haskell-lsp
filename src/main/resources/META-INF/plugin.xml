@@ -29,6 +29,11 @@
     </description>
 
     <change-notes><![CDATA[
+    <h3>1.4.4</h3>
+    <ul>
+        <li>Add GitHub Actions CI workflow</li>
+        <li>Make HLS path configurable through settings</li>
+    </ul>
     <h3>1.4.3</h3>
     <ul>
         <li>Ensure compatibility with future IDE versions</li>

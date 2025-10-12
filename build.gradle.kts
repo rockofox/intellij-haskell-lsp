@@ -4,13 +4,13 @@ import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 plugins {
     id("java")
     id("org.jetbrains.kotlin.jvm") version "1.9.25"
-    id("org.jetbrains.intellij.platform") version "2.0.1"
+    id("org.jetbrains.intellij.platform") version "2.9.0"
     id("org.jetbrains.grammarkit") version "2022.3.2.2"
     jacoco
 }
 
 group = "boo.fox"
-version = "1.4.3"
+version = "1.4.4"
 
 repositories {
     mavenCentral()
