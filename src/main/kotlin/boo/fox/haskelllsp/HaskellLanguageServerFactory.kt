@@ -3,6 +3,7 @@ package boo.fox.haskelllsp
 import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.util.SystemInfo
 import com.intellij.util.EnvironmentUtil
 import com.redhat.devtools.lsp4ij.LanguageServerFactory
@@ -25,6 +26,38 @@ class HaskellLanguageServer(project: Project) : ProcessStreamConnectionProvider(
             Paths.get(path, HLS_EXECUTABLE_NAME).toFile().takeIf { it.canExecute() }
         }?.path
 
+    private fun getProjectWorkingDirectory(project: Project): String? {
+        // Try multiple methods to get a valid project directory
+        // 1. Try project.basePath (most common case)
+        project.basePath?.let { path ->
+            val dir = File(path)
+            if (dir.exists() && dir.isDirectory) {
+                return path
+            }
+        }
+        
+        // 2. Try project.baseDir (VirtualFile-based)
+        project.baseDir?.let { baseDir ->
+            val path = baseDir.path
+            val dir = File(path)
+            if (dir.exists() && dir.isDirectory) {
+                return path
+            }
+        }
+        
+        // 3. Try content roots (for multi-module projects)
+        ProjectRootManager.getInstance(project).contentRoots.firstOrNull()?.let { root ->
+            val path = root.path
+            val dir = File(path)
+            if (dir.exists() && dir.isDirectory) {
+                return path
+            }
+        }
+        
+        // 4. If no valid directory found, return null (let system use default)
+        return null
+    }
+
     init {
         val settings = boo.fox.haskelllsp.settings.HaskellLspSettings.getInstance()
         val configuredPath = settings.hlsPath.takeIf { it.isNotEmpty() }
@@ -35,7 +68,11 @@ class HaskellLanguageServer(project: Project) : ProcessStreamConnectionProvider(
 
         if (!hlsPath.isNullOrEmpty()) {
             super.setCommands(listOf(hlsPath, "--lsp"))
-            super.setWorkingDirectory(project.basePath)
+            val workingDir = getProjectWorkingDirectory(project)
+            if (workingDir != null) {
+                super.setWorkingDirectory(workingDir)
+            }
+            // If workingDir is null, don't set it - let the system use the default
         } else {
             val message = if (configuredPath != null) {
                 "Configured Haskell Language Server path is invalid or not executable. Please check the path in Settings | Tools | Haskell LSP."
