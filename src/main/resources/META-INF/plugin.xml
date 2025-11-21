@@ -109,7 +109,7 @@
                 name="Haskell"
                 implementationClass="boo.fox.haskelllsp.language.HaskellFileType"
                 language="Haskell"
-                extensions="hs">
+                extensions="hs;lhs">
         </fileType>
         <lang.commenter language="Haskell"
                          implementationClass="boo.fox.haskelllsp.language.HaskellCommenter"/>

@@ -17,7 +17,8 @@ import com.intellij.psi.tree.TokenSet
 class HaskellParserDefinition: ParserDefinition{
     private val FILE: IFileElementType = IFileElementType(HaskellLanguage.INSTANCE)
     override fun createLexer(project: Project?): Lexer {
-        return HaskellLexerAdapter()
+        val baseLexer = HaskellLexerAdapter()
+        return baseLexer
     }
 
     override fun createParser(project: Project?): PsiParser {

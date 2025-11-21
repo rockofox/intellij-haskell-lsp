@@ -7,6 +7,11 @@ import com.intellij.openapi.vfs.VirtualFile
 
 class HaskellSyntaxHighlighterFactory: SyntaxHighlighterFactory() {
     override fun getSyntaxHighlighter(project: Project?, virtualFile: VirtualFile?): SyntaxHighlighter {
-        return HaskellSyntaxHighlighter()
+        val isLiterateHaskell = virtualFile?.extension?.equals("lhs", ignoreCase = true) == true
+        return if (isLiterateHaskell) {
+            LiterateHaskellSyntaxHighlighter()
+        } else {
+            HaskellSyntaxHighlighter()
+        }
     }
 }
