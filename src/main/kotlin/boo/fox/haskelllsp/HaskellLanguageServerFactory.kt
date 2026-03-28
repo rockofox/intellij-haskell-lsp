@@ -1,5 +1,7 @@
 package boo.fox.haskelllsp
 
+import boo.fox.haskelllsp.wsl.WslHaskellLanguageServer
+import boo.fox.haskelllsp.wsl.WslSupport
 import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.project.Project
@@ -15,7 +17,15 @@ import java.io.File
 import java.nio.file.Paths
 
 class HaskellLanguageServerFactory : LanguageServerFactory {
-    override fun createConnectionProvider(project: Project): StreamConnectionProvider = HaskellLanguageServer(project)
+    override fun createConnectionProvider(project: Project): StreamConnectionProvider {
+        val wslInfo = WslSupport.detectWsl(project.basePath)
+        return if (wslInfo != null) {
+            WslHaskellLanguageServer(project, wslInfo)
+        } else {
+            HaskellLanguageServer(project)
+        }
+    }
+
     override fun createLanguageClient(project: Project): LanguageClientImpl = HaskellLanguageClient(project)
 }
 
