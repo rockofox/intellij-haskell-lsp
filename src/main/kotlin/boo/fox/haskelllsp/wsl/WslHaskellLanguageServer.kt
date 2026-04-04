@@ -43,7 +43,7 @@ class WslHaskellLanguageServer(
     // Inbound rewriting: file:///home/... → file:////wsl$/Ubuntu/home/...
     // Negative lookahead excludes Windows drive letters (file:///C:/...)
     private val inboundRegex = Regex("""file:///(?![A-Za-z]:)""")
-    private val inboundReplacement = "file:////wsl\$/$distroName/"
+    private val inboundReplacement = "file:////wsl.localhost/$distroName/"
 
     private var inboundPipe: PipedInputStream? = null
     private var outboundPipe: PipedOutputStream? = null

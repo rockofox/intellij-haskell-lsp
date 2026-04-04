@@ -34,9 +34,9 @@ class WslUriRewritingTest {
     )
 
     // Inbound: HLS (Linux) → IntelliJ (Windows)
-    // file:///home/... → file:////wsl$/Ubuntu/home/...
+    // file:///home/... → file:////wsl.localhost/Ubuntu/home/...
     private val inboundRegex = Regex("""file:///(?![A-Za-z]:)""")
-    private val inboundReplacement = "file:////wsl\$/$distroName/"
+    private val inboundReplacement = "file:////wsl.localhost/$distroName/"
 
     private fun rewriteInbound(message: String): String {
         val withHackage = hackageRegex.replace(message) { match ->
@@ -62,14 +62,14 @@ class WslUriRewritingTest {
     @Test
     fun `inbound rewrites Linux file URI to WSL UNC URI`() {
         val input = """{"uri":"file:///home/vojko/project/src/Main.hs"}"""
-        val expected = """{"uri":"file:////wsl$/Ubuntu/home/vojko/project/src/Main.hs"}"""
+        val expected = """{"uri":"file:////wsl.localhost/Ubuntu/home/vojko/project/src/Main.hs"}"""
         assertEquals(expected, rewriteInbound(input))
     }
 
     @Test
     fun `inbound rewrites multiple URIs in same message`() {
         val input = """{"uri":"file:///home/vojko/a.hs","target":"file:///home/vojko/b.hs"}"""
-        val expected = """{"uri":"file:////wsl$/Ubuntu/home/vojko/a.hs","target":"file:////wsl$/Ubuntu/home/vojko/b.hs"}"""
+        val expected = """{"uri":"file:////wsl.localhost/Ubuntu/home/vojko/a.hs","target":"file:////wsl.localhost/Ubuntu/home/vojko/b.hs"}"""
         assertEquals(expected, rewriteInbound(input))
     }
 
@@ -82,7 +82,7 @@ class WslUriRewritingTest {
     @Test
     fun `inbound handles usr local paths`() {
         val input = """{"uri":"file:///usr/local/lib/ghc/doc/index.html"}"""
-        val expected = """{"uri":"file:////wsl$/Ubuntu/usr/local/lib/ghc/doc/index.html"}"""
+        val expected = """{"uri":"file:////wsl.localhost/Ubuntu/usr/local/lib/ghc/doc/index.html"}"""
         assertEquals(expected, rewriteInbound(input))
     }
 
@@ -133,7 +133,7 @@ class WslUriRewritingTest {
     @Test
     fun `inbound does not rewrite non-library file URIs to Hackage`() {
         val input = """{"uri":"file:///home/vojko/project/src/Main.hs"}"""
-        val expected = """{"uri":"file:////wsl$/Ubuntu/home/vojko/project/src/Main.hs"}"""
+        val expected = """{"uri":"file:////wsl.localhost/Ubuntu/home/vojko/project/src/Main.hs"}"""
         assertEquals(expected, rewriteInbound(input))
     }
 
@@ -198,7 +198,7 @@ class WslUriRewritingTest {
 
     @Test
     fun `round trip outbound then inbound preserves original WSL URI`() {
-        val original = """{"uri":"file:////wsl$/Ubuntu/home/vojko/project/Main.hs"}"""
+        val original = """{"uri":"file:////wsl.localhost/Ubuntu/home/vojko/project/Main.hs"}"""
         val afterOutbound = rewriteOutbound(original)
         assertEquals("""{"uri":"file:///home/vojko/project/Main.hs"}""", afterOutbound)
         val afterInbound = rewriteInbound(afterOutbound)
