@@ -42,4 +42,14 @@ object WslSupport {
 
         return WslPathInfo(distroName, linuxPath, distribution)
     }
+
+    internal fun parseWslUncPath(path: String?): Pair<String, String>? {
+        if (path == null) return null
+
+        val match = WSL_UNC_PREFIX.matchEntire(path) ?: return null
+        val distroName = match.groupValues[1]
+        val remainder = match.groupValues[2]
+        val linuxPath = if (remainder.isEmpty()) "/" else remainder.replace('\\', '/')
+        return distroName to linuxPath
+    }
 }
