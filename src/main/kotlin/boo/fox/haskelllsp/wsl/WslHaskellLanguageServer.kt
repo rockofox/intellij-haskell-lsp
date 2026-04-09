@@ -3,6 +3,7 @@ package boo.fox.haskelllsp.wsl
 import boo.fox.haskelllsp.settings.HaskellLspSettings
 import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
+import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.project.Project
 import com.redhat.devtools.lsp4ij.server.ProcessStreamConnectionProvider
 import java.io.InputStream
@@ -17,7 +18,7 @@ import java.io.PipedOutputStream
  * - Outbound (IntelliJ → HLS): Windows UNC URIs like file:////wsl.localhost/Ubuntu/home/...
  *   are converted to Linux URIs like file:///home/...
  * - Inbound (HLS → IntelliJ): Linux URIs like file:///home/... are converted to Windows
- *   UNC URIs like file:////wsl$/Ubuntu/home/...
+ *   UNC URIs like file:////wsl.localhost/Ubuntu/home/...
  */
 class WslHaskellLanguageServer(
     project: Project,
@@ -29,7 +30,7 @@ class WslHaskellLanguageServer(
     // Outbound rewriting: strip WSL UNC prefix from URIs (IntelliJ → HLS)
     // Handles 2-4 slashes after "file:" and all WSL UNC variants
     private val outboundRegex = Regex(
-        """file:/{2,4}(?:wsl\.localhost|wsl\$|wsl%24)/$distroName/""",
+        """file:/{2,4}(?:wsl\.localhost|wsl\$|wsl%24)/${Regex.escape(distroName)}/""",
         RegexOption.IGNORE_CASE
     )
 
@@ -40,7 +41,7 @@ class WslHaskellLanguageServer(
         """file:///[^")*]*?/libraries/([^/"]+)/([^")]*?\.html(?:#[^")]*)?)"""
     )
 
-    // Inbound rewriting: file:///home/... → file:////wsl$/Ubuntu/home/...
+    // Inbound rewriting: file:///home/... → file:////wsl.localhost/Ubuntu/home/...
     // Negative lookahead excludes Windows drive letters (file:///C:/...)
     private val inboundRegex = Regex("""file:///(?![A-Za-z]:)""")
     private val inboundReplacement = "file:////wsl.localhost/$distroName/"
@@ -49,11 +50,11 @@ class WslHaskellLanguageServer(
     private var outboundPipe: PipedOutputStream? = null
     private var inboundRewriter: Thread? = null
     private var outboundRewriter: Thread? = null
+    private val launchCommand: String
 
     init {
         val settings = HaskellLspSettings.getInstance()
-        val hlsCommand = settings.hlsPath.takeIf { it.isNotEmpty() }
-            ?: "haskell-language-server-wrapper"
+        launchCommand = buildLaunchCommand(settings.hlsPath, distroName)
 
         // Use bash login shell so GHCup and other PATH modifications from
         // .profile / .bash_profile are available. "exec" replaces bash with HLS
@@ -62,7 +63,7 @@ class WslHaskellLanguageServer(
             listOf(
                 "wsl.exe", "-d", distroName,
                 "--cd", wslInfo.linuxPath,
-                "--", "bash", "-lc", "exec $hlsCommand --lsp"
+                "--", "bash", "-lc", launchCommand
             )
         )
 
@@ -85,15 +86,17 @@ class WslHaskellLanguageServer(
         // Inbound: HLS stdout → rewrite Linux URIs to Windows UNC → LSP4IJ reads
         val inPipeOut = PipedOutputStream()
         inboundPipe = PipedInputStream(inPipeOut, PIPE_BUFFER_SIZE)
-        inboundRewriter = createRewriterThread("WSL-LSP-Inbound", rawIn, inPipeOut, ::rewriteInbound)
+        val inbound = createRewriterThread("WSL-LSP-Inbound", rawIn, inPipeOut, ::rewriteInbound)
+        inboundRewriter = inbound
 
         // Outbound: LSP4IJ writes → rewrite Windows UNC URIs to Linux → HLS stdin
         val outPipeIn = PipedInputStream(PIPE_BUFFER_SIZE)
         outboundPipe = PipedOutputStream(outPipeIn)
-        outboundRewriter = createRewriterThread("WSL-LSP-Outbound", outPipeIn, rawOut, ::rewriteOutbound)
+        val outbound = createRewriterThread("WSL-LSP-Outbound", outPipeIn, rawOut, ::rewriteOutbound)
+        outboundRewriter = outbound
 
-        inboundRewriter!!.start()
-        outboundRewriter!!.start()
+        inbound.start()
+        outbound.start()
     }
 
     override fun getInputStream(): InputStream? = inboundPipe ?: super.getInputStream()
@@ -124,6 +127,31 @@ class WslHaskellLanguageServer(
 
     companion object {
         private const val PIPE_BUFFER_SIZE = 262144 // 256 KB
+        private const val DEFAULT_WSL_HLS_COMMAND = "haskell-language-server-wrapper"
+
+        internal fun buildLaunchCommand(configuredPath: String?, distroName: String): String {
+            val executable = resolveWslExecutable(configuredPath, distroName)
+            return "exec ${shellQuote(executable)} --lsp"
+        }
+
+        internal fun resolveWslExecutable(configuredPath: String?, distroName: String): String {
+            val trimmedPath = configuredPath?.trim().orEmpty()
+            if (trimmedPath.isEmpty()) return DEFAULT_WSL_HLS_COMMAND
+
+            val uncPath = WslSupport.parseWslUncPath(trimmedPath)
+            if (uncPath != null && uncPath.first.equals(distroName, ignoreCase = true)) {
+                return uncPath.second
+            }
+
+            if (trimmedPath.startsWith("/")) return trimmedPath
+
+            // Windows host paths are not executable inside WSL; fall back to the distro PATH.
+            return DEFAULT_WSL_HLS_COMMAND
+        }
+
+        internal fun shellQuote(value: String): String = "'${value.replace("'", "'\"'\"'")}'"
+
+        private val LOG = logger<WslHaskellLanguageServer>()
 
         private fun createRewriterThread(
             name: String,
@@ -156,7 +184,10 @@ class WslHaskellLanguageServer(
                     }
                 }
 
-                if (contentLength < 0) continue
+                if (contentLength < 0) {
+                    LOG.warn("WSL LSP rewriter: received message with missing or invalid Content-Length; closing stream")
+                    return
+                }
 
                 // Read exactly contentLength bytes
                 val bodyBytes = ByteArray(contentLength)

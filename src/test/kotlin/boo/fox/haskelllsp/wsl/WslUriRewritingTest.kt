@@ -50,7 +50,7 @@ class WslUriRewritingTest {
     // Outbound: IntelliJ (Windows) → HLS (Linux)
     // file://{2,4}wsl.localhost/Ubuntu/... → file:///...
     private val outboundRegex = Regex(
-        """file:/{2,4}(?:wsl\.localhost|wsl\$|wsl%24)/$distroName/""",
+        """file:/{2,4}(?:wsl\.localhost|wsl\$|wsl%24)/${Regex.escape(distroName)}/""",
         RegexOption.IGNORE_CASE
     )
 
