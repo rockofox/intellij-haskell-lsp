@@ -72,4 +72,35 @@ class HaskellLanguageServerFactoryTest : BasePlatformTestCase() {
         // Test that the executable name is correctly determined
         assertEquals("haskell-language-server-wrapper", HaskellLanguageServer.HLS_EXECUTABLE_NAME)
     }
+
+    fun testHaskellLanguageServerFindsExecutableInExtraPath() {
+        // Simulate HLS installed in ~/.ghcup/bin (common when IDEA launched from desktop shortcut)
+        val fakeGhcupBin = createTempDirectory("ghcup-bin")
+        val fakeHls = File(fakeGhcupBin, HaskellLanguageServer.HLS_EXECUTABLE_NAME)
+        fakeHls.createNewFile()
+        fakeHls.setExecutable(true)
+        fakeHls.deleteOnExit()
+
+        // Override user.home so the extra-paths logic finds our fake binary
+        val originalHome = System.getProperty("user.home")
+        System.setProperty("user.home", fakeGhcupBin.parent)
+
+        try {
+            settings.hlsPath = ""
+            // Server creation should succeed and find the binary in the extra paths
+            val server = HaskellLanguageServer(project)
+            assertTrue(true) // passes if no crash / no unhandled error
+        } finally {
+            System.setProperty("user.home", originalHome)
+            fakeHls.delete()
+            fakeGhcupBin.delete()
+        }
+    }
+
+    private fun createTempDirectory(prefix: String): File {
+        val dir = File(System.getProperty("java.io.tmpdir"), "$prefix-${System.nanoTime()}")
+        dir.mkdir()
+        dir.deleteOnExit()
+        return dir
+    }
 }

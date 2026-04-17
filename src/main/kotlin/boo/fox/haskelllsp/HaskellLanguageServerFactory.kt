@@ -31,10 +31,19 @@ class HaskellLanguageServerFactory : LanguageServerFactory {
 }
 
 class HaskellLanguageServer(project: Project) : ProcessStreamConnectionProvider() {
-    private fun findExecutableInPATH() =
-        EnvironmentUtil.getValue("PATH")?.split(File.pathSeparator)?.firstNotNullOfOrNull { path ->
+    private fun findExecutableInPATH(): String? {
+        val systemPath = EnvironmentUtil.getValue("PATH")?.split(File.pathSeparator) ?: emptyList()
+        val home = System.getProperty("user.home") ?: ""
+        val extraPaths = listOf(
+            "$home/.ghcup/bin",
+            "$home/.cabal/bin",
+            "$home/local/bin",
+            "/usr/local/bin",
+        )
+        return (systemPath + extraPaths).firstNotNullOfOrNull { path ->
             Paths.get(path, HLS_EXECUTABLE_NAME).toFile().takeIf { it.canExecute() }
         }?.path
+    }
 
     private fun getProjectWorkingDirectory(project: Project): String? {
         project.basePath?.let { path ->
